@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Light theme, Android 12 and 13: Material You tones taken from the wallpaper palette.
+     Android 14+ uses the system's own colour roles instead (values-v34). -->
+<resources>
+    <color name="surface">@android:color/system_neutral1_10</color>
+    <color name="surface_container">@android:color/system_neutral1_50</color>
+    <color name="surface_container_high">@android:color/system_neutral2_100</color>
+    <color name="on_surface">@android:color/system_neutral1_900</color>
+    <color name="on_surface_variant">@android:color/system_neutral2_700</color>
+    <color name="primary">@android:color/system_accent1_600</color>
+    <color name="on_primary">@android:color/system_accent1_0</color>
+    <color name="primary_container">@android:color/system_accent1_100</color>
+    <color name="on_primary_container">@android:color/system_accent1_900</color>
+    <color name="secondary_container">@android:color/system_accent2_100</color>
+    <color name="on_secondary_container">@android:color/system_accent2_900</color>
+    <color name="outline">@android:color/system_neutral2_500</color>
+    <color name="outline_variant">@android:color/system_neutral2_200</color>
+    <color name="error">#B3261E</color>
+
+    <!-- App icon -->
+    <color name="launcher_bg">#2C6B5F</color>
+</resources>

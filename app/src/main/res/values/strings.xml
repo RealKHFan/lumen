@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Lumen</string>
+
+    <!-- Tabs -->
+    <string name="tab_photos">Photos</string>
+    <string name="tab_folders">Folders</string>
+    <string name="tab_bin">Bin</string>
+    <string name="settings">Settings</string>
+
+    <!-- Folder filter -->
+    <string name="all_folders">All folders</string>
+    <plurals name="n_folders">
+        <item quantity="one">%d folder</item>
+        <item quantity="other">%d folders</item>
+    </plurals>
+    <string name="filter_title">Show photos from</string>
+    <string name="filter_everything">Everything</string>
+    <string name="filter_everything_hint">Every photo and video on your phone</string>
+    <string name="filter_show_everything">Show everything</string>
+    <plurals name="filter_apply">
+        <item quantity="one">Show %d folder</item>
+        <item quantity="other">Show %d folders</item>
+    </plurals>
+    <string name="filter_empty_title">No photos in these folders</string>
+    <string name="filter_empty_body">The folders you picked are empty or were removed.</string>
+
+    <!-- Counts and selection -->
+    <plurals name="items_count">
+        <item quantity="one">%d item</item>
+        <item quantity="other">%d items</item>
+    </plurals>
+    <plurals name="selected_count">
+        <item quantity="one">%d selected</item>
+        <item quantity="other">%d selected</item>
+    </plurals>
+
+    <!-- Actions -->
+    <string name="action_share">Share</string>
+    <string name="action_move_to_bin">Move to bin</string>
+    <string name="action_restore">Restore</string>
+    <string name="action_delete_forever">Delete forever</string>
+    <string name="action_empty_bin">Empty bin</string>
+    <string name="action_edit">Edit</string>
+    <string name="action_info">Info</string>
+    <string name="action_close">Close</string>
+    <string name="action_back">Back</string>
+    <string name="action_more">More options</string>
+    <string name="action_menu">Open menu</string>
+    <string name="action_use_as">Use as</string>
+    <string name="action_open_with">Open with</string>
+    <string name="action_select_day">Select all from this date</string>
+    <string name="action_play">Play</string>
+    <string name="action_pause">Pause</string>
+    <string name="action_mute">Mute</string>
+    <string name="action_unmute">Unmute</string>
+    <string name="action_open_lumen">Open in Lumen</string>
+    <string name="undo">Undo</string>
+
+    <plurals name="moved_to_bin">
+        <item quantity="one">Moved %d item to bin</item>
+        <item quantity="other">Moved %d items to bin</item>
+    </plurals>
+    <plurals name="restored">
+        <item quantity="one">Restored %d item</item>
+        <item quantity="other">Restored %d items</item>
+    </plurals>
+    <plurals name="deleted_forever">
+        <item quantity="one">Deleted %d item for good</item>
+        <item quantity="other">Deleted %d items for good</item>
+    </plurals>
+
+    <!-- Bin -->
+    <string name="bin_banner">Android deletes items in the bin for good after 30 days.</string>
+    <string name="bin_skip_prompts">Skip the confirmation each time</string>
+    <string name="bin_turn_on">Turn on</string>
+    <string name="bin_empty_title">Your bin is empty</string>
+    <string name="bin_empty_body">Photos and videos you move to the bin stay here for 30 days, so you can restore them.</string>
+    <plurals name="days_left">
+        <item quantity="one">%d day</item>
+        <item quantity="other">%d days</item>
+    </plurals>
+    <string name="days_left_today">Today</string>
+
+    <!-- Empty states -->
+    <string name="photos_empty_title">No photos yet</string>
+    <string name="photos_empty_body">Photos and videos you take or save show up here.</string>
+
+    <!-- Access -->
+    <string name="perm_title">Your photos, nothing else</string>
+    <string name="perm_body">Lumen shows the photos and videos on this phone. It has no internet access, so nothing ever leaves your device.</string>
+    <string name="perm_allow">Allow access</string>
+    <string name="perm_settings">Open settings</string>
+    <string name="perm_denied_body">Access is turned off. In Settings, turn on Photos and videos for Lumen.</string>
+    <string name="partial_banner">Lumen can only see the photos you picked.</string>
+    <string name="partial_allow_all">Allow all</string>
+
+    <!-- Screen reader labels for thumbnails -->
+    <string name="photo_desc">Photo, %s</string>
+    <string name="video_desc">Video, %s</string>
+
+    <!-- Dates -->
+    <string name="today">Today</string>
+    <string name="yesterday">Yesterday</string>
+
+    <!-- Viewer -->
+    <string name="locked_hint">Unlock to see all photos</string>
+    <string name="processing">Finishing the photo…</string>
+    <string name="cant_open">Can\'t open this file</string>
+    <string name="no_editor">No editor app is installed</string>
+    <string name="no_app">No app can open this</string>
+    <string name="info_title">Details</string>
+    <string name="info_file">File</string>
+    <string name="info_folder">Folder</string>
+    <string name="info_camera">Camera</string>
+    <string name="info_location">Location</string>
+    <string name="info_show_location">Show location</string>
+    <string name="info_open_map">Open in maps</string>
+    <string name="info_no_location">No location saved</string>
+
+    <!-- Crash report -->
+    <string name="crash_title">Lumen stopped</string>
+    <string name="crash_body">Something went wrong last time. Copy this report and send it to the developer, then tap Close. The report stays on your phone unless you share it.</string>
+    <string name="crash_copy">Copy report</string>
+    <string name="crash_copied">Report copied</string>
+    <string name="crash_close">Close</string>
+
+    <!-- Settings -->
+    <string name="settings_appearance">Appearance</string>
+    <string name="settings_theme_system">Follow system</string>
+    <string name="settings_theme_light">Light</string>
+    <string name="settings_theme_dark">Dark</string>
+    <string name="settings_pure_black">Pure black in dark mode</string>
+    <string name="settings_pure_black_summary">Saves power on OLED screens</string>
+    <string name="settings_bin">Bin</string>
+    <string name="settings_media_management">Skip bin confirmations</string>
+    <string name="settings_media_management_on">On. Moving to and from the bin happens right away.</string>
+    <string name="settings_media_management_off">Off. Android asks every time.</string>
+    <string name="settings_access">Photo access</string>
+    <string name="settings_access_summary">Change what Lumen can see</string>
+    <string name="settings_about">About</string>
+    <string name="settings_version">Version %s</string>
+    <string name="settings_privacy">No internet access</string>
+    <string name="settings_privacy_summary">Lumen has no internet permission, so it can\'t send anything anywhere.</string>
+    <string name="settings_camera">Camera thumbnail</string>
+    <string name="settings_camera_summary">Tapping the thumbnail in Pixel Camera opens the photo here.</string>
+    <string name="settings_source">Source code</string>
+    <string name="settings_source_summary">github.com/RealKHFan/lumen</string>
+    <string name="settings_licenses">Open-source licenses</string>
+    <string name="settings_licenses_summary">Lumen: GNU GPL v3. Font: SIL Open Font License. Icons: Apache 2.0.</string>
+</resources>

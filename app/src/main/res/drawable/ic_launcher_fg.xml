@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Lumen icon: a lens with a horizon and a low sun. 108dp adaptive-icon canvas, drawn inside
+     the 66dp safe zone so every launcher mask shows all of it. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group>
+        <clip-path android:pathData="M27,54 A27,27 0 1,0 81,54 A27,27 0 1,0 27,54 Z" />
+        <path
+            android:fillColor="#1F4F46"
+            android:pathData="M20,20 H88 V88 H20 Z" />
+        <path
+            android:fillColor="#B3EFE1"
+            android:pathData="M24,63 Q39,50 54,59 T86,55 V90 H24 Z" />
+        <path
+            android:fillColor="#F2D8A0"
+            android:pathData="M57,43 A7.5,7.5 0 1,0 72,43 A7.5,7.5 0 1,0 57,43 Z" />
+    </group>
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M25,54 A29,29 0 1,0 83,54 A29,29 0 1,0 25,54 Z"
+        android:strokeWidth="4.5"
+        android:strokeColor="#E8FFF8" />
+</vector>

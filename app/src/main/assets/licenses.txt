@@ -1,0 +1,14 @@
+Lumen
+Copyright (C) 2026 RealKHFan, written with help from Claude (Anthropic).
+GNU General Public License v3.0 or later. You can redistribute and change it under
+the terms of that license. There is no warranty.
+
+Bricolage Grotesque (date and title font)
+Copyright 2022 The Bricolage Grotesque Project Authors.
+SIL Open Font License 1.1.
+
+Material Symbols (icons)
+Copyright Google LLC. Apache License 2.0.
+
+Kotlin standard library
+Copyright JetBrains s.r.o. and Kotlin contributors. Apache License 2.0.

@@ -1,0 +1,15 @@
+# Build output
+build/
+
+# Signing keys and their passwords never go into the repository
+*.jks
+*.keystore
+*.p12
+keystore-info.txt
+keystore.properties
+
+# Editors
+.idea/
+.vscode/
+*.iml
+.DS_Store
