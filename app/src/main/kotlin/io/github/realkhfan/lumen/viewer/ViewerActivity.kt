@@ -1,14 +1,17 @@
 package io.github.realkhfan.lumen.viewer
 
+import android.annotation.SuppressLint
 import android.Manifest
 import android.app.Activity
 import android.app.KeyguardManager
+import android.content.ContentResolver
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.RectF
 import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.InsetDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.text.format.DateFormat
@@ -148,8 +151,9 @@ class ViewerActivity : Activity() {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
             setPadding(dp(10), 0, dp(12), 0)
-            minimumHeight = dp(34)
-            background = Ui.pressable(Ui.rounded(0x33FFFFFF, dpf(17f)), 0x33FFFFFF, dpf(17f))
+            minimumHeight = dp(48)
+            // Looks 34 dp tall; the inset keeps the touch area at 48 dp.
+            background = InsetDrawable(Ui.pressable(Ui.rounded(0x33FFFFFF, dpf(17f)), 0x33FFFFFF, dpf(17f)), 0, dp(7), 0, dp(7))
             addView(Ui.icon(this@ViewerActivity, R.drawable.ic_lock, Color.WHITE, 18))
             addView(Ui.text(this@ViewerActivity, 13f, Color.WHITE, Fonts.medium, getString(R.string.locked_hint)).apply {
                 setPadding(dp(6), 0, 0, 0)
@@ -240,9 +244,14 @@ class ViewerActivity : Activity() {
                     items.map { Entry.Media(it) }
                 }
                 Mode.SECURE -> {
-                    // Only what the camera handed over during this locked session.
-                    val session = app.secureSession.add(uris.map { it.toString() }, System.currentTimeMillis())
-                    session.map { entryFor(Uri.parse(it)) }
+                    // Only what the camera handed over during this locked session, and only
+                    // photos taken just now, whoever sent the request.
+                    val now = System.currentTimeMillis()
+                    val session = app.secureSession.add(uris.map { it.toString() }, now)
+                    session.map { entryFor(Uri.parse(it)) }.filter { e ->
+                        val item = e.item
+                        if (item != null) Review.freshForLockScreen(item.dateAddedSec, now) else !MediaRepo.isMediaUri(e.uri)
+                    }
                 }
                 Mode.CAMERA, Mode.EXTERNAL -> {
                     val first = uris.firstOrNull()?.let { if (Compat.hasMediaAccess(this)) app.repo.queryOne(it) else null }
@@ -268,16 +277,14 @@ class ViewerActivity : Activity() {
         }
     }
 
-    /** Pictures handed to us: the intent's data, any extra ones in its clip, or a shared stream. */
+    /** Pictures handed to us: the intent's data plus any extra ones in its clip. */
     private fun incomingUris(): List<Uri> {
         val out = LinkedHashSet<Uri>()
         intent.data?.let { out.add(it) }
         val clip = intent.clipData
         if (clip != null) for (i in 0 until clip.itemCount) clip.getItemAt(i).uri?.let { out.add(it) }
-        if (intent.action == Intent.ACTION_SEND) {
-            Compat.parcelableExtra(intent, Intent.EXTRA_STREAM, Uri::class.java)?.let { out.add(it) }
-        }
-        return out.toList()
+        // Android forbids passing file:// links on to other apps, so Share would crash on them.
+        return out.filter { it.scheme == ContentResolver.SCHEME_CONTENT }
     }
 
     /** Background thread: describes any URI, using the media database when possible. */
@@ -534,6 +541,7 @@ class ViewerActivity : Activity() {
 
     @Deprecated("Android 12 back handling; Android 13+ uses BackHandler")
     @Suppress("DEPRECATION")
+    @SuppressLint("GestureBackNavigation") // only reached on Android 12; 13+ uses BackHandler
     override fun onBackPressed() {
         if (!back.handleLegacy()) super.onBackPressed()
     }

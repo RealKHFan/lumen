@@ -47,7 +47,7 @@ class PillNav(
                 orientation = HORIZONTAL
                 gravity = Gravity.CENTER
                 minimumWidth = dp(56)
-                minimumHeight = dp(44)
+                minimumHeight = dp(48)
                 setPadding(dp(16), 0, dp(16), 0)
                 contentDescription = tab.label
                 tooltipText = tab.label
@@ -60,7 +60,7 @@ class PillNav(
                 setOnClickListener { select(i, notify = true) }
             }
             views.add(item)
-            addView(item, LayoutParams(-2, dp(44)).apply { if (i > 0) marginStart = dp(2) })
+            addView(item, LayoutParams(-2, dp(48)).apply { if (i > 0) marginStart = dp(2) })
         }
     }
 
@@ -79,8 +79,8 @@ class PillNav(
             label.visibility = if (on) View.VISIBLE else View.GONE
             v.isSelected = on
             v.background = Ui.pressable(
-                if (on) Ui.rounded(palette.secondaryContainer, dpf(22f)) else null,
-                withAlpha(palette.onSurface, 0.12f), dpf(22f),
+                if (on) Ui.rounded(palette.secondaryContainer, dpf(24f)) else null,
+                withAlpha(palette.onSurface, 0.12f), dpf(24f),
             )
         }
         if (notify) onSelect(index)
@@ -145,6 +145,7 @@ class PillNav(
 }
 
 /** The pill shown instead of the navigation while photos are selected. */
+@SuppressLint("ViewConstructor")
 class ActionPill(context: Context, private val palette: Palette) : LinearLayout(context) {
     init {
         orientation = HORIZONTAL
@@ -163,17 +164,17 @@ class ActionPill(context: Context, private val palette: Palette) : LinearLayout(
                 orientation = HORIZONTAL
                 gravity = Gravity.CENTER
                 setPadding(dp(14), 0, dp(18), 0)
-                minimumHeight = dp(44)
+                minimumHeight = dp(48)
                 background = Ui.pressable(
-                    if (a.primary) Ui.rounded(palette.secondaryContainer, dpf(22f)) else null,
-                    withAlpha(fg, 0.14f), dpf(22f),
+                    if (a.primary) Ui.rounded(palette.secondaryContainer, dpf(24f)) else null,
+                    withAlpha(fg, 0.14f), dpf(24f),
                 )
                 val tint = if (a.primary) palette.onSecondaryContainer else fg
                 addView(Ui.icon(context, a.icon, tint, 22))
                 addView(Ui.text(context, 14f, tint, Fonts.medium, a.label).apply { setPadding(dp(8), 0, 0, 0) })
                 setOnClickListener { a.run() }
             }
-            addView(view, LayoutParams(-2, dp(44)).apply { if (i > 0) marginStart = dp(4) })
+            addView(view, LayoutParams(-2, dp(48)).apply { if (i > 0) marginStart = dp(4) })
         }
     }
 
@@ -280,10 +281,10 @@ class BottomSheet(private val activity: Activity, private val palette: Palette) 
 
 /** Short message near the bottom of the screen, with an optional action such as Undo. */
 object Snack {
-    private var current: View? = null
+    private const val TAG = "lumen-snack"
 
     fun show(parent: FrameLayout, palette: Palette, text: String, bottomMargin: Int, action: String? = null, onAction: (() -> Unit)? = null) {
-        current?.let { parent.removeView(it) }
+        parent.findViewWithTag<View>(TAG)?.let { parent.removeView(it) }
         val ctx = parent.context
         val bar = LinearLayout(ctx).apply {
             orientation = LinearLayout.HORIZONTAL
@@ -305,16 +306,13 @@ object Snack {
         val lp = FrameLayout.LayoutParams(-1, -2, Gravity.BOTTOM).apply {
             setMargins(ctx.dp(16), 0, ctx.dp(16), bottomMargin)
         }
+        bar.tag = TAG
         parent.addView(bar, lp)
-        current = bar
         bar.alpha = 0f
         bar.translationY = ctx.dpf(16f)
         bar.animate().alpha(1f).translationY(0f).setDuration(200).setInterpolator(Motion.ENTER).start()
         bar.postDelayed({
-            bar.animate().alpha(0f).setDuration(200).withEndAction {
-                parent.removeView(bar)
-                if (current === bar) current = null
-            }.start()
+            bar.animate().alpha(0f).setDuration(200).withEndAction { parent.removeView(bar) }.start()
         }, 4000)
     }
 }

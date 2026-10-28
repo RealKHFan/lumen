@@ -153,6 +153,17 @@ class ReviewTest {
     }
 
     @Test
+    fun lockScreenOnlyShowsFreshShots() {
+        val now = 1_800_000_000_000L
+        assertTrue(Review.freshForLockScreen(now / 1000 - 60, now))
+        assertTrue(Review.freshForLockScreen(now / 1000 - 30 * 60, now))
+        assertFalse(Review.freshForLockScreen(now / 1000 - 31 * 60, now))
+        assertFalse(Review.freshForLockScreen(now / 1000 - 400 * 86_400, now))
+        // Unknown date: not shown on the lock screen.
+        assertFalse(Review.freshForLockScreen(0, now))
+    }
+
+    @Test
     fun secureSessionKeepsNewestFirstWithoutDuplicates() {
         val s = SecureSession(timeoutMs = 1000)
         assertEquals(listOf("a"), s.add(listOf("a"), 0))

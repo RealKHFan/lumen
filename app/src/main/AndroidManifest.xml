@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-  Lumen is installed under Google Photos' package name on purpose: Pixel Camera only opens the
-  photo you just took in an app with this id. Everything you see on screen says "Lumen".
-  Consequence: it can't be installed next to the real Google Photos.
--->
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.google.android.apps.photos">
+<!-- The package name (com.google.android.apps.photos) is set in app/build.gradle.kts. -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
@@ -97,10 +92,10 @@
                 <data android:mimeType="video/*" />
             </intent-filter>
 
-            <!-- Pixel Camera checks for this to decide that a "Photos" app is installed. -->
+            <!-- Pixel Camera checks for this to decide that a "Photos" app is installed. No DEFAULT
+                 category, so Lumen doesn't show up in other apps' share menus. -->
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
-                <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="image/*" />
             </intent-filter>
         </activity>

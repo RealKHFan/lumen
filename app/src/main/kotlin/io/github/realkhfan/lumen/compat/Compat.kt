@@ -15,19 +15,17 @@ import android.window.OnBackInvokedDispatcher
 
 /**
  * Every call that needs a newer Android than 12 (API 31) lives here, behind a version check.
- * build.sh compiles the rest of the app against the Android 12 SDK to prove it.
+ * Android lint (part of every release build) checks that the rest of the app works on Android 12.
  */
 object Compat {
-    private val SDK = Build.VERSION.SDK_INT
-
     /** Runtime permissions for reading photos and videos on this Android version. */
     fun mediaPermissions(): Array<String> = when {
-        SDK >= 34 -> arrayOf(
+        Build.VERSION.SDK_INT >= 34 -> arrayOf(
             Manifest.permission.READ_MEDIA_IMAGES,
             Manifest.permission.READ_MEDIA_VIDEO,
             Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED,
         )
-        SDK >= 33 -> arrayOf(Manifest.permission.READ_MEDIA_IMAGES, Manifest.permission.READ_MEDIA_VIDEO)
+        Build.VERSION.SDK_INT >= 33 -> arrayOf(Manifest.permission.READ_MEDIA_IMAGES, Manifest.permission.READ_MEDIA_VIDEO)
         else -> arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
     }
 
@@ -36,7 +34,7 @@ object Compat {
 
     /** Full access to every photo and video. */
     fun hasFullMediaAccess(context: Context): Boolean = when {
-        SDK >= 33 -> granted(context, Manifest.permission.READ_MEDIA_IMAGES) ||
+        Build.VERSION.SDK_INT >= 33 -> granted(context, Manifest.permission.READ_MEDIA_IMAGES) ||
             granted(context, Manifest.permission.READ_MEDIA_VIDEO)
         else -> granted(context, Manifest.permission.READ_EXTERNAL_STORAGE)
     }
@@ -44,12 +42,12 @@ object Compat {
     /** Any access, including Android 14's "selected photos only". */
     fun hasMediaAccess(context: Context): Boolean =
         hasFullMediaAccess(context) ||
-            (SDK >= 34 && granted(context, Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED))
+            (Build.VERSION.SDK_INT >= 34 && granted(context, Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED))
 
     fun isPartialAccess(context: Context): Boolean = hasMediaAccess(context) && !hasFullMediaAccess(context)
 
     fun <T : Parcelable> parcelableExtra(intent: Intent, name: String, type: Class<T>): T? =
-        if (SDK >= 33) {
+        if (Build.VERSION.SDK_INT >= 33) {
             intent.getParcelableExtra(name, type)
         } else {
             @Suppress("DEPRECATION")
@@ -59,7 +57,7 @@ object Compat {
 
     /** Turns off the system's open or close animation; Lumen animates the viewer itself. */
     fun skipTransition(activity: Activity, opening: Boolean) {
-        if (SDK >= 34) {
+        if (Build.VERSION.SDK_INT >= 34) {
             activity.overrideActivityTransition(
                 if (opening) Activity.OVERRIDE_TRANSITION_OPEN else Activity.OVERRIDE_TRANSITION_CLOSE, 0, 0,
             )
@@ -77,12 +75,12 @@ object Compat {
 
     /** For system broadcasts such as "phone unlocked"; never reachable by other apps. */
     fun registerSystemReceiver(context: Context, receiver: BroadcastReceiver, filter: IntentFilter) {
-        if (SDK >= 33) context.registerReceiver(receiver, filter, Context.RECEIVER_NOT_EXPORTED)
+        if (Build.VERSION.SDK_INT >= 33) context.registerReceiver(receiver, filter, Context.RECEIVER_NOT_EXPORTED)
         else context.registerReceiver(receiver, filter)
     }
 
     fun versionName(context: Context): String = try {
-        val info = if (SDK >= 33) {
+        val info = if (Build.VERSION.SDK_INT >= 33) {
             context.packageManager.getPackageInfo(context.packageName, PackageManager.PackageInfoFlags.of(0))
         } else {
             @Suppress("DEPRECATION")
@@ -105,10 +103,11 @@ class BackHandler(private val activity: Activity, private val onBack: () -> Unit
         set(value) {
             if (field == value) return
             field = value
-            if (Build.VERSION.SDK_INT >= 33) update33(value)
+            update33(value)
         }
 
     private fun update33(on: Boolean) {
+        if (Build.VERSION.SDK_INT < 33) return
         val dispatcher = activity.onBackInvokedDispatcher
         if (on) {
             val cb = OnBackInvokedCallback { onBack() }

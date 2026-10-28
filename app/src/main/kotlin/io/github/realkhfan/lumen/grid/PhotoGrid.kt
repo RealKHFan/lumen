@@ -164,24 +164,10 @@ class PhotoGrid(context: Context, private val palette: Palette, val kind: Kind) 
 
     fun clearSelection() = updateSelection(emptySet())
 
-    fun selectAll() = updateSelection(items.mapTo(LinkedHashSet()) { it.id })
-
     fun selectedItems(): List<MediaItem> = items.filter { it.id in selected }
 
     fun scrollToTop() {
         if (list.firstVisiblePosition > 30) list.setSelection(0) else list.smoothScrollToPositionFromTop(0, 0, 220)
-    }
-
-    /** Index of [item] on screen, so the viewer can zoom back into the right thumbnail. */
-    fun boundsOf(itemId: Long): Rect? {
-        for (c in 0 until list.childCount) {
-            val row = list.getChildAt(c) as? RowView ?: continue
-            for (t in 0 until row.childCount) {
-                val cell = row.getChildAt(t) as ThumbView
-                if (cell.visibility == View.VISIBLE && cell.item?.id == itemId) return cell.screenBounds()
-            }
-        }
-        return null
     }
 
     /** Call when the screen comes back: "Today" may have become "Yesterday". */
@@ -328,7 +314,8 @@ class PhotoGrid(context: Context, private val palette: Palette, val kind: Kind) 
         val d = DragSelection(selected, cell.index, adding)
         drag = d
         updateSelection(d.at(cell.index, items))
-        list.startDragSelect()
+        // A long-press from TalkBack or a keyboard has no finger to lift, so drag-select would never end.
+        if (list.fingerDown) list.startDragSelect() else drag = null
     }
 
     private fun dragTo(x: Float, y: Float) {
@@ -367,6 +354,8 @@ class PhotoGrid(context: Context, private val palette: Palette, val kind: Kind) 
         private var pinching = false
         private var pinchFactor = 1f
         private var dragging = false
+        var fingerDown = false
+            private set
         private var lastX = 0f
         private var lastY = 0f
 
@@ -426,6 +415,7 @@ class PhotoGrid(context: Context, private val palette: Palette, val kind: Kind) 
 
         override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
             if (ev.actionMasked == MotionEvent.ACTION_DOWN) pinching = false
+            fingerDown = ev.actionMasked != MotionEvent.ACTION_UP && ev.actionMasked != MotionEvent.ACTION_CANCEL
             if (ev.actionMasked == MotionEvent.ACTION_DOWN || ev.actionMasked == MotionEvent.ACTION_MOVE) {
                 // Remember the finger even before a drag starts, so auto-scroll knows where it is.
                 lastX = ev.x
@@ -860,7 +850,7 @@ class PhotoGrid(context: Context, private val palette: Palette, val kind: Kind) 
             when (event.actionMasked) {
                 MotionEvent.ACTION_DOWN -> {
                     val y = thumbY()
-                    val hit = shown > 0.5f && event.x >= width - dp(44) &&
+                    val hit = shown > 0.5f && event.x >= width - dp(48) &&
                         event.y >= y - dp(20) && event.y <= y + thumbH + dp(20)
                     if (!hit) return false
                     dragging = true

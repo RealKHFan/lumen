@@ -1,11 +1,13 @@
 package io.github.realkhfan.lumen
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.Rect
+import android.graphics.drawable.InsetDrawable
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
@@ -87,6 +89,11 @@ class MainActivity : Activity() {
     private val foldersAdapter = FoldersAdapter()
     private var pendingItems: List<MediaItem> = emptyList()
     private val onData: () -> Unit = { showData() }
+
+    // What the screen shows now, so coming back from a photo doesn't regroup the whole library.
+    private var shownLibrary: List<MediaItem>? = null
+    private var shownBin: List<MediaItem>? = null
+    private var shownFilter: FolderFilter? = null
 
     private var themeGeneration = 0
 
@@ -262,7 +269,7 @@ class MainActivity : Activity() {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
             setPadding(dp(14), 0, dp(8), 0)
-            minimumHeight = dp(36)
+            minimumHeight = dp(48)
             addView(chipText, LinearLayout.LayoutParams(-2, -2).apply { marginEnd = dp(2) })
             addView(Ui.icon(this@MainActivity, R.drawable.ic_expand_more, palette.onSurface, 20))
             setOnClickListener { showFilterSheet() }
@@ -270,9 +277,9 @@ class MainActivity : Activity() {
         row.addView(menuButton)
         row.addView(closeButton)
         row.addView(title, LinearLayout.LayoutParams(0, -2, 1f))
-        row.addView(chip, LinearLayout.LayoutParams(-2, dp(36)).apply { marginEnd = dp(12) })
+        row.addView(chip, LinearLayout.LayoutParams(-2, dp(48)).apply { marginEnd = dp(12) })
         topBar.addView(row, FrameLayout.LayoutParams(-1, dp(64), Gravity.BOTTOM))
-        updateChip()
+        updateChip(emptyList())
     }
 
     /** The hamburger menu: the three sections, then Settings. New entries go here. */
@@ -412,6 +419,11 @@ class MainActivity : Activity() {
     private fun showData() {
         val lib = repo.library ?: return
         val filter = prefs.filter
+        val bin = repo.bin ?: emptyList()
+        if (lib === shownLibrary && bin === shownBin && filter == shownFilter) return
+        shownLibrary = lib
+        shownBin = bin
+        shownFilter = filter
         val shown = filter.apply(lib)
         photosGrid.setItems(shown)
         photosEmpty.removeAllViews()
@@ -433,11 +445,10 @@ class MainActivity : Activity() {
         val folders = Folders.from(lib)
         foldersAdapter.set(folders)
         foldersEmpty.visibility = if (folders.isEmpty()) View.VISIBLE else View.GONE
-        val bin = repo.bin ?: emptyList()
         binGrid.setItems(bin)
         binEmpty.visibility = if (bin.isEmpty()) View.VISIBLE else View.GONE
         binGrid.visibility = if (bin.isEmpty()) View.INVISIBLE else View.VISIBLE
-        updateChip()
+        updateChip(folders)
     }
 
     private fun applyFilter(filter: FolderFilter) {
@@ -446,17 +457,17 @@ class MainActivity : Activity() {
         photosGrid.scrollToTop()
     }
 
-    private fun updateChip() {
-        val lib = repo.library ?: emptyList()
+    private fun updateChip(folders: List<Folder>) {
         val filter = prefs.filter
-        chipText.text = filter.label(Folders.from(lib), getString(R.string.all_folders)) { n ->
+        chipText.text = filter.label(folders, getString(R.string.all_folders)) { n ->
             resources.getQuantityString(R.plurals.n_folders, n, n)
         }
         val active = !filter.showsEverything
-        chip.background = Ui.pressable(
+        // Looks 36 dp tall; the inset keeps the touch area at 48 dp.
+        chip.background = InsetDrawable(Ui.pressable(
             Ui.rounded(if (active) palette.secondaryContainer else palette.surfaceContainerHigh, dpf(18f)),
             withAlpha(palette.onSurface, 0.12f), dpf(18f),
-        )
+        ), 0, dp(6), 0, dp(6))
         val fg = if (active) palette.onSecondaryContainer else palette.onSurface
         chipText.setTextColor(fg)
         (chip.getChildAt(1) as ImageView).imageTintList = ColorStateList.valueOf(fg)
@@ -600,6 +611,7 @@ class MainActivity : Activity() {
 
     @Deprecated("Android 12 back handling; Android 13+ uses BackHandler")
     @Suppress("DEPRECATION")
+    @SuppressLint("GestureBackNavigation") // only reached on Android 12; 13+ uses BackHandler
     override fun onBackPressed() {
         if (!back.handleLegacy()) super.onBackPressed()
     }

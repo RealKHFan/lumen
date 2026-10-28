@@ -1,12 +1,15 @@
 # Build output
 build/
+.gradle/
+.kotlin/
+local.properties
 
 # Signing keys and their passwords never go into the repository
+signing/
 *.jks
 *.keystore
 *.p12
 keystore-info.txt
-keystore.properties
 
 # Editors
 .idea/

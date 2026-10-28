@@ -25,7 +25,6 @@ import kotlin.math.roundToInt
  */
 class ZoomImageView(context: Context) : View(context) {
     var onTap: (() -> Unit)? = null
-    var onZoomChanged: ((Boolean) -> Unit)? = null
 
     private var drawable: Drawable? = null
     var imageWidth = 0
@@ -36,7 +35,6 @@ class ZoomImageView(context: Context) : View(context) {
     private var scale = 1f
     private var tx = 0f
     private var ty = 0f
-    private var wasZoomed = false
     private val fling = OverScroller(context)
     private var anim: ValueAnimator? = null
     private val rect = RectF()
@@ -67,7 +65,6 @@ class ZoomImageView(context: Context) : View(context) {
         tx = 0f
         ty = 0f
         invalidate()
-        notifyZoom()
     }
 
     private fun fit(): Float =
@@ -131,14 +128,6 @@ class ZoomImageView(context: Context) : View(context) {
         }
     }
 
-    private fun notifyZoom() {
-        val z = isZoomed
-        if (z != wasZoomed) {
-            wasZoomed = z
-            onZoomChanged?.invoke(z)
-        }
-    }
-
     /** Scale to [target] keeping the picture point under (fx, fy) in place. */
     private fun translationFor(target: Float, fx: Float, fy: Float): Pair<Float, Float> {
         val f = fit()
@@ -170,9 +159,6 @@ class ZoomImageView(context: Context) : View(context) {
             }
             start()
         }
-        scale = targetScale
-        notifyZoom()
-        scale = s0
     }
 
     private fun settle() {
@@ -183,7 +169,7 @@ class ZoomImageView(context: Context) : View(context) {
         val (mx, my) = limits(target)
         nx = nx.coerceIn(-mx, mx)
         ny = ny.coerceIn(-my, my)
-        if (target != scale || nx != tx || ny != ty) animateTo(target, nx, ny) else notifyZoom()
+        if (target != scale || nx != tx || ny != ty) animateTo(target, nx, ny)
     }
 
     private val scaleDetector = ScaleGestureDetector(context, object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
@@ -202,7 +188,6 @@ class ZoomImageView(context: Context) : View(context) {
             tx = nx
             ty = ny
             invalidate()
-            notifyZoom()
             return true
         }
 

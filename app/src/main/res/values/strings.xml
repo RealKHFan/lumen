@@ -83,6 +83,8 @@
     <string name="days_left_today">Today</string>
 
     <!-- Empty states -->
+    <string name="folder_empty_title">This folder is empty</string>
+    <string name="folder_empty_body">Photos you moved to the bin stay there for 30 days.</string>
     <string name="photos_empty_title">No photos yet</string>
     <string name="photos_empty_body">Photos and videos you take or save show up here.</string>
 
@@ -110,8 +112,6 @@
     <string name="no_editor">No editor app is installed</string>
     <string name="no_app">No app can open this</string>
     <string name="info_title">Details</string>
-    <string name="info_file">File</string>
-    <string name="info_folder">Folder</string>
     <string name="info_camera">Camera</string>
     <string name="info_location">Location</string>
     <string name="info_show_location">Show location</string>

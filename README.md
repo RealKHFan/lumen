@@ -62,12 +62,22 @@ What that means for you:
    (Android's "Media management" access). Without it, Android asks you to confirm every move
    to or from the bin.
 
-Updates must be signed with the same key as the version you have installed.
+Updates must be signed with the same key as the version you have installed. Official releases
+are signed with this certificate (SHA-256):
+
+```
+EF:9F:5B:1D:78:D7:F4:26:79:E1:DA:F7:B4:79:34:38:E4:70:D9:82:56:2F:76:5B:40:0C:13:98:D5:09:01:5E
+```
+
+Check a download with `apksigner verify --print-certs Lumen-x.y.z.apk`, or with
+[AppVerifier](https://github.com/soupslurpr/AppVerifier) on the phone.
 
 ## Privacy
 
+- No Google services: no Play Services, Firebase, analytics or crash-reporting SDKs. The package
+  name is the only Google thing about it (see above).
 - No `INTERNET` permission. Lumen can't send anything anywhere, even if it wanted to.
-- No analytics, no ads, no accounts, no third-party libraries (only Kotlin's standard library).
+- No ads, no accounts, no third-party libraries in the app (only Kotlin's standard library).
 - If Lumen crashes, the error report is saved on the phone and shown next time with a Copy button.
   It's never sent anywhere.
 - Lumen never copies or uploads your photos. It reads them through Android's media database,
@@ -76,24 +86,20 @@ Updates must be signed with the same key as the version you have installed.
 
 ## Build from source
 
-Lumen builds without Gradle or Android Studio, using a short shell script and Ubuntu's Android
-tools (aapt2, dx, zipalign, apksigner, ProGuard), the Kotlin compiler and the Android SDK jars.
+Needs JDK 17 or newer and the Android SDK (platform 36). Point `local.properties` at the SDK
+(`sdk.dir=/path/to/android-sdk`), then:
 
 ```sh
-sudo tools/setup-toolchain.sh   # Ubuntu 24.04 or Debian; installs into /opt/androidtc
-./test.sh                       # unit tests for the core logic, on a plain JVM
-./build.sh                      # builds build/Lumen-<version>.apk
+./gradlew testDebugUnitTest       # logic tests, and screenshot tests of the main screens
+./gradlew recordRoborazziDebug    # re-record the screenshots in app/src/test/screenshots
+./gradlew assembleRelease         # app/build/outputs/apk/release/app-release.apk
 ```
 
-`build.sh` compiles with warnings treated as errors, checks that everything outside `compat/`
-also compiles against Android 12 (API 31), strips the unused parts of the Kotlin standard
-library, and runs `tools/check-dex.py`. That check fails the build if the app contains Java 8
-lambdas Android can't run, or uses any class, method or field that doesn't exist on Android.
-
-To sign with your own key instead of a throwaway debug key:
+Without a key the release build is signed with the debug key, which can't update an installed
+release. To sign with your own key:
 
 ```sh
-LUMEN_KEYSTORE=/path/to/key.jks LUMEN_KEY_ALIAS=lumen LUMEN_KS_PASS=... ./build.sh
+LUMEN_KEYSTORE=/path/to/key.jks LUMEN_KEYSTORE_PASSWORD=... LUMEN_KEY_ALIAS=lumen ./gradlew assembleRelease
 ```
 
 ## Project layout
@@ -107,6 +113,7 @@ LUMEN_KEYSTORE=/path/to/key.jks LUMEN_KEY_ALIAS=lumen LUMEN_KS_PASS=... ./build.
 | `ui/` | Colours, fonts, the floating navigation pill, bottom sheet, small helpers |
 | `compat/` | The only place that uses APIs newer than Android 12 |
 | `MainActivity`, `FolderActivity`, `SettingsActivity` | The screens |
+| `app/src/test/` | Logic tests, plus screenshot tests that run the real screens on a fake photo library (the pictures above come from them) |
 
 Requires Android 12 or newer. Built for and targets Android 16.
 

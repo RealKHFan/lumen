@@ -135,6 +135,13 @@ object Review {
      */
     fun isSecure(action: String?, phoneLocked: Boolean): Boolean =
         action != null && (action in SECURE || (action in ALL && phoneLocked))
+
+    /** How long after a photo is saved it may still be shown on the lock screen. */
+    const val LOCK_SCREEN_WINDOW_MS = 30 * 60_000L
+
+    /** Lock screen: only photos saved in the last 30 minutes, never older ones from the library. */
+    fun freshForLockScreen(dateAddedSec: Long, nowMs: Long): Boolean =
+        dateAddedSec > 0 && nowMs - dateAddedSec * 1000 <= LOCK_SCREEN_WINDOW_MS
 }
 
 /**
@@ -142,7 +149,7 @@ object Review {
  * Lets you swipe between the shots of one locked session without exposing anything else.
  * Cleared when the phone is unlocked, or when nothing happened for [timeoutMs].
  */
-class SecureSession(private val timeoutMs: Long = 30 * 60_000L, private val maxItems: Int = 200) {
+class SecureSession(private val timeoutMs: Long = Review.LOCK_SCREEN_WINDOW_MS, private val maxItems: Int = 200) {
     private var uris: List<String> = emptyList()
     private var lastMs: Long? = null
 

@@ -32,14 +32,11 @@ import io.github.realkhfan.lumen.lumen
 object Fonts {
     lateinit var display: Typeface
         private set
-    lateinit var displayLarge: Typeface
-        private set
     val medium: Typeface = Typeface.create("sans-serif-medium", Typeface.NORMAL)
     val body: Typeface = Typeface.DEFAULT
 
     fun init(assets: AssetManager) {
         display = build(assets, "'wght' 560, 'opsz' 24, 'wdth' 100") ?: Typeface.DEFAULT_BOLD
-        displayLarge = build(assets, "'wght' 620, 'opsz' 72, 'wdth' 90") ?: Typeface.DEFAULT_BOLD
     }
 
     private fun build(assets: AssetManager, axes: String): Typeface? = try {
@@ -168,9 +165,9 @@ object Ui {
     fun textButton(context: Context, label: String, fg: Int, onClick: (View) -> Unit) =
         text(context, 15f, fg, Fonts.medium, label).apply {
             gravity = Gravity.CENTER
-            minHeight = context.dp(44)
+            minHeight = context.dp(48)
             setPadding(context.dp(14), 0, context.dp(14), 0)
-            background = pressable(null, withAlpha(fg, 0.16f), context.dpf(22f))
+            background = pressable(null, withAlpha(fg, 0.16f), context.dpf(24f))
             setOnClickListener { onClick(it) }
         }
 

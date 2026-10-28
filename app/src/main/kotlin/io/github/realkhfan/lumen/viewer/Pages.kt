@@ -209,7 +209,7 @@ class ImagePage(context: Context) : FrameLayout(context) {
     override fun canScrollVertically(direction: Int) = zoom.canScrollVertically(direction)
 
     companion object {
-        /** Long side for the picture on screen: full detail for 12 MP, plenty to zoom into 50 MP. */
+        // shortcut: at most 4096 px on the long side, so a fully zoomed 50 MP photo (8160 px) shows about half its detail; switch to tiled decoding (BitmapRegionDecoder) if full-detail zoom on 50 MP shots matters.
         const val SHARP = 4096
     }
 }

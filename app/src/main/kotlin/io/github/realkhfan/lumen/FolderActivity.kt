@@ -1,5 +1,6 @@
 package io.github.realkhfan.lumen
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Rect
@@ -37,6 +38,7 @@ class FolderActivity : Activity() {
     private lateinit var backButton: View
     private lateinit var closeButton: View
     private lateinit var actions: ActionPill
+    private lateinit var empty: View
     private var bucketId = 0L
     private var folderName = ""
     private var bottomInset = 0
@@ -96,6 +98,9 @@ class FolderActivity : Activity() {
             }
         }
         root.addView(grid, FrameLayout.LayoutParams(-1, -1))
+        empty = Ui.emptyState(this, palette, R.drawable.ic_folder,
+            getString(R.string.folder_empty_title), getString(R.string.folder_empty_body)).apply { visibility = View.GONE }
+        root.addView(empty, FrameLayout.LayoutParams(-1, -1))
 
         val bar = FrameLayout(this)
         topBg = View(this).apply {
@@ -158,11 +163,9 @@ class FolderActivity : Activity() {
     private fun showData() {
         val lib = lumen.repo.library ?: return
         val items = lib.filter { it.bucketId == bucketId }
-        if (items.isEmpty() && lib.isNotEmpty()) {
-            finish()
-            return
-        }
         grid.setItems(items)
+        // An emptied folder stays open, so its "Moved to bin" Undo can still be used.
+        empty.visibility = if (items.isEmpty()) View.VISIBLE else View.GONE
         updateSelectionUi()
     }
 
@@ -194,6 +197,7 @@ class FolderActivity : Activity() {
 
     @Deprecated("Android 12 back handling; Android 13+ uses BackHandler")
     @Suppress("DEPRECATION")
+    @SuppressLint("GestureBackNavigation") // only reached on Android 12; 13+ uses BackHandler
     override fun onBackPressed() {
         if (!back.handleLegacy()) super.onBackPressed()
     }

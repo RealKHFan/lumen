@@ -44,7 +44,6 @@ class MediaPager(context: Context) : ViewGroup(context) {
 
     private val gap = dp(20)
     private val slots = HashMap<Int, View>()
-    private val positions = HashMap<View, Int>()
     private val recycled = HashMap<Int, ArrayList<View>>()
     private val scroller = OverScroller(context, Motion.STANDARD)
     private val slop = ViewConfiguration.get(context).scaledTouchSlop
@@ -108,7 +107,6 @@ class MediaPager(context: Context) : ViewGroup(context) {
                 val view = recycled[type]?.removeLastOrNull() ?: a.create(type)
                 view.setTag(TAG_TYPE, type)
                 slots[pos] = view
-                positions[view] = pos
                 addViewInLayout(view, -1, LayoutParams(-1, -1), true)
                 a.bind(view, pos, pos == current)
                 view.measure(
@@ -123,7 +121,6 @@ class MediaPager(context: Context) : ViewGroup(context) {
 
     private fun recycle(view: View) {
         adapter?.unbind(view)
-        positions.remove(view)
         removeViewInLayout(view)
         view.translationX = 0f
         view.translationY = 0f
