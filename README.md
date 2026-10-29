@@ -5,6 +5,19 @@
 <p align="center">A private photo gallery for Android, laid out like Google Photos.<br>
 No internet permission, no tracking, no cloud. Made for GrapheneOS on Pixel phones.</p>
 
+<p align="center">
+<img src="docs/screenshots/photos.png" width="200" alt="Photos grouped by day">
+<img src="docs/screenshots/folder-filter.png" width="200" alt="Choosing which folders to show">
+<img src="docs/screenshots/viewer.png" width="200" alt="A photo open in the viewer">
+<img src="docs/screenshots/photos-dark.png" width="200" alt="Photos in dark mode">
+</p>
+<p align="center">
+<img src="docs/screenshots/selecting.png" width="200" alt="Selecting photos to share or move to the bin">
+<img src="docs/screenshots/folders.png" width="200" alt="The Folders tab">
+<img src="docs/screenshots/bin.png" width="200" alt="The bin with days left on each item">
+<img src="docs/screenshots/menu.png" width="200" alt="The side menu">
+</p>
+
 ---
 
 ## What it does
